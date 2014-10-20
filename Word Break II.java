@@ -75,3 +75,46 @@ public class Solution {
         cur.isEnd=true;
     }
 }
+
+public class Solution {
+    public List<String> wordBreak(String s, Set<String> dict) {
+         int length=s.length();
+         boolean[][] dp=new boolean[length][length+1];
+         for(int len=1;len<=length;len++){
+             for(int start=0;start+len<=length;start++){
+                 String sub=s.substring(start,start+len);
+                 if(dict.contains(sub)){
+                     dp[start][len]=true;
+                 }else{
+                     for(int k=1;k<len;k++){
+                         if(dp[start][k]&&dp[start+k][len-k]){
+                             dp[start][len]=true;
+                             break;
+                         }
+                     }
+                 }
+             }
+         }
+         List<String> result=new ArrayList<>();
+         dfs(result,"",0,dp,s,dict);
+         return result;
+     }
+     private void dfs(List<String> result,String solution,int start,boolean[][] dp,String s,Set<String> dict){
+         int len=s.length();
+         if(start==len){
+             result.add(solution.substring(1));
+             return;
+         }
+         if(!dp[start][len-start]){
+             return;
+         }
+         for(int l=1;start+l<=len;l++){
+             if(dp[start][l]){
+                 String sub=s.substring(start,start+l);
+                 if(dict.contains(sub)){
+                    dfs(result,solution+" "+sub,start+l,dp,s,dict);    
+                 }
+             }
+         }
+     }
+}
